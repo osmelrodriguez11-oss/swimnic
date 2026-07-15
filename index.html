@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SwimNIC | Resultados en vivo de natación nicaragüense</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#0A2540;
+    --navy-2:#0F3257;
+    --cocibolca:#147D82;
+    --cocibolca-light:#DCEFEF;
+    --amanecer:#F2A73B;
+    --amanecer-dark:#8A5A16;
+    --charcoal:#1C1F26;
+    --spuma:#F7FAFB;
+    --line:#E1E7EA;
+    --oro:#D4AF37;
+    --plata:#9AA5AC;
+    --bronce:#B5651D;
+    --texto-sec:#5B6B72;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;}
+  body{
+    font-family:'Inter',sans-serif;
+    background:var(--spuma);
+    color:var(--charcoal);
+    line-height:1.5;
+  }
+  h1,h2,h3,.display{font-family:'Barlow Condensed',sans-serif;font-weight:700;letter-spacing:0.01em;}
+  .mono{font-family:'JetBrains Mono',monospace;}
+  a{color:inherit;text-decoration:none;}
+  img{max-width:100%;display:block;}
+
+  /* HEADER */
+  header.site{
+    background:var(--navy);
+    color:#fff;
+    padding:14px 32px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:24px;
+  }
+  .brand{
+    display:flex;align-items:center;gap:10px;
+    font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:26px;letter-spacing:0.02em;
+  }
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--amanecer);}
+  nav.main{display:flex;gap:28px;font-size:14px;font-weight:500;}
+  nav.main a{opacity:0.85;padding:6px 0;border-bottom:2px solid transparent;transition:.15s;}
+  nav.main a:hover,nav.main a.active{opacity:1;border-bottom-color:var(--amanecer);}
+  .app-badges{display:flex;gap:8px;}
+  .app-badges span{
+    font-size:11px;border:1px solid rgba(255,255,255,0.3);padding:6px 10px;border-radius:6px;opacity:0.85;
+  }
+
+  /* SCOREBOARD TICKER — signature element */
+  .ticker-wrap{
+    background:var(--charcoal);
+    color:#fff;
+    overflow:hidden;
+    white-space:nowrap;
+    border-bottom:1px solid #000;
+  }
+  .ticker{
+    display:inline-flex;
+    padding:9px 0;
+    animation:scroll 38s linear infinite;
+    font-family:'JetBrains Mono',monospace;
+    font-size:13px;
+  }
+  .ticker span.item{padding:0 32px;display:inline-flex;align-items:center;gap:10px;}
+  .ticker .live-dot{
+    width:7px;height:7px;border-radius:50%;background:var(--amanecer);
+    animation:blink 1.2s ease-in-out infinite;
+  }
+  .ticker .sep{color:#556;}
+  @keyframes scroll{from{transform:translateX(0);}to{transform:translateX(-50%);}}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:0.25;}}
+
+  /* HERO / DASHBOARD HEADER */
+  .hero{
+    background:var(--navy-2);
+    color:#fff;
+    padding:40px 32px 32px;
+  }
+  .hero-inner{max-width:1240px;margin:0 auto;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px;}
+  .hero-title{font-size:44px;line-height:1.05;max-width:560px;}
+  .hero-sub{color:#B9CBD6;font-size:15px;margin-top:10px;max-width:480px;}
+  .countdown{display:flex;gap:14px;}
+  .countdown .cell{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:8px;padding:10px 16px;text-align:center;min-width:64px;}
+  .countdown .num{font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;}
+  .countdown .lbl{font-size:10px;text-transform:uppercase;letter-spacing:0.08em;color:#9FB4C0;margin-top:2px;}
+
+  /* LAYOUT */
+  main{max-width:1240px;margin:0 auto;padding:28px 32px 60px;}
+  .grid3{display:grid;grid-template-columns:1.1fr 1.4fr 1.1fr;gap:20px;align-items:start;}
+  @media(max-width:980px){.grid3{grid-template-columns:1fr;}}
+
+  .panel{background:#fff;border:1px solid var(--line);border-radius:10px;overflow:hidden;}
+  .panel-head{
+    padding:14px 18px;border-bottom:1px solid var(--line);
+    display:flex;align-items:center;justify-content:space-between;
+  }
+  .panel-head h2{font-size:20px;}
+  .badge-live{
+    font-size:11px;font-weight:600;color:#8A5A16;background:#FCEFDC;border:1px solid #F2D9AE;
+    padding:3px 8px;border-radius:20px;display:inline-flex;align-items:center;gap:5px;
+  }
+  .badge-live .live-dot{width:6px;height:6px;border-radius:50%;background:var(--amanecer);animation:blink 1.2s infinite;}
+
+  /* TABS */
+  .tabs{display:flex;border-bottom:1px solid var(--line);}
+  .tabs button{
+    flex:1;padding:10px 8px;background:none;border:none;font-size:13px;font-weight:600;
+    color:var(--texto-sec);cursor:pointer;border-bottom:2px solid transparent;
+  }
+  .tabs button.active{color:var(--cocibolca);border-bottom-color:var(--cocibolca);}
+  .event-list{max-height:520px;overflow-y:auto;}
+  .event-list a{
+    display:flex;align-items:center;justify-content:space-between;gap:10px;
+    padding:10px 18px;border-bottom:1px solid #F0F3F4;font-size:13px;
+  }
+  .event-list a:hover{background:var(--spuma);}
+  .ev-code{font-family:'JetBrains Mono',monospace;color:var(--texto-sec);font-size:11px;min-width:36px;}
+  .medal-ico{width:14px;height:14px;border-radius:50%;flex-shrink:0;}
+  .medal-ico.done{background:var(--oro);}
+  .medal-ico.pending{background:var(--line);}
+
+  /* RESULTS TABLE */
+  table.results{width:100%;border-collapse:collapse;font-size:13px;}
+  table.results th{
+    text-align:left;padding:9px 12px;background:var(--spuma);color:var(--texto-sec);
+    font-weight:600;font-size:11px;text-transform:uppercase;letter-spacing:0.04em;
+    border-bottom:1px solid var(--line);
+  }
+  table.results td{padding:10px 12px;border-bottom:1px solid #F0F3F4;}
+  table.results tr:last-child td{border-bottom:none;}
+  .pill-status{font-size:11px;font-weight:600;color:var(--cocibolca);background:var(--cocibolca-light);padding:2px 8px;border-radius:12px;}
+  .time{font-family:'JetBrains Mono',monospace;font-weight:600;}
+
+  /* MEDAL TABLE */
+  table.medals{width:100%;border-collapse:collapse;font-size:12.5px;}
+  table.medals th,table.medals td{padding:8px 6px;text-align:center;}
+  table.medals th{color:var(--texto-sec);font-size:10px;text-transform:uppercase;border-bottom:1px solid var(--line);}
+  table.medals td.club{text-align:left;display:flex;align-items:center;gap:8px;font-weight:500;}
+  table.medals tr:not(:last-child) td{border-bottom:1px solid #F0F3F4;}
+  .flag{width:20px;height:14px;border-radius:2px;background:var(--line);flex-shrink:0;}
+  .rank{font-family:'JetBrains Mono',monospace;color:var(--texto-sec);width:20px;display:inline-block;}
+  td.oro-col{color:var(--amanecer-dark);font-weight:700;}
+  td.total-col{font-weight:700;}
+
+  /* DELEGATIONS */
+  .section-title{font-size:26px;margin:36px 0 14px;}
+  .clubs-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px;}
+  .club-card{
+    background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 10px;
+    text-align:center;font-size:12.5px;font-weight:600;
+  }
+  .club-card .swatch{width:36px;height:36px;border-radius:50%;background:var(--cocibolca-light);margin:0 auto 8px;}
+
+  footer.site{background:var(--navy);color:#B9CBD6;padding:28px 32px;margin-top:40px;}
+  .footer-inner{max-width:1240px;margin:0 auto;display:flex;justify-content:space-between;flex-wrap:wrap;gap:16px;font-size:12px;}
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="brand"><span class="dot"></span>SwimNIC</div>
+  <nav class="main">
+    <a href="#" class="active">Inicio</a>
+    <a href="#">Calendario</a>
+    <a href="#">Clubes</a>
+    <a href="#">Nadadores</a>
+    <a href="#">Medallero</a>
+    <a href="#">Récords</a>
+  </nav>
+  <div class="app-badges">
+    <span>FENANICA</span>
+    <span>Resultados oficiales</span>
+  </div>
+</header>
+
+<div class="ticker-wrap">
+  <div class="ticker">
+    <span class="item"><span class="live-dot"></span>E14 200m Libre Damas 15-16 — Serie 3 en curso</span>
+    <span class="sep">·</span>
+    <span class="item">E12 100m Pecho Varones 13-14 — Resultado oficial</span>
+    <span class="sep">·</span>
+    <span class="item">Piscina Olímpica Managua — Sesión Finales 16:00</span>
+    <span class="sep">·</span>
+    <span class="item"><span class="live-dot"></span>E14 200m Libre Damas 15-16 — Serie 3 en curso</span>
+    <span class="sep">·</span>
+    <span class="item">E12 100m Pecho Varones 13-14 — Resultado oficial</span>
+    <span class="sep">·</span>
+    <span class="item">Piscina Olímpica Managua — Sesión Finales 16:00</span>
+  </div>
+</div>
+
+<section class="hero">
+  <div class="hero-inner">
+    <div>
+      <h1 class="hero-title">Campeonato Nacional FENANICA 2026</h1>
+      <p class="hero-sub">Piscina Olímpica Alexis Argüello, Managua · Día 2 de 4 · Resultados, medallero y transmisión en vivo</p>
+    </div>
+    <div class="countdown">
+      <div class="cell"><div class="num mono">02</div><div class="lbl">Días</div></div>
+      <div class="cell"><div class="num mono">06</div><div class="lbl">Horas</div></div>
+      <div class="cell"><div class="num mono">41</div><div class="lbl">Min</div></div>
+      <div class="cell"><div class="num mono">18</div><div class="lbl">Seg</div></div>
+    </div>
+  </div>
+</section>
+
+<main>
+  <div class="grid3">
+
+    <!-- EVENTS PANEL -->
+    <div class="panel">
+      <div class="panel-head"><h2>Pruebas</h2></div>
+      <div class="tabs">
+        <button class="active" onclick="showTab('dama')">Damas</button>
+        <button onclick="showTab('var')">Varones</button>
+        <button onclick="showTab('mix')">Mixto</button>
+      </div>
+      <div class="event-list" id="tab-dama"><p style="padding:14px 18px;color:var(--texto-sec);font-size:13px;">Cargando…</p></div>
+      <div class="event-list" id="tab-var" style="display:none"></div>
+      <div class="event-list" id="tab-mix" style="display:none"></div>
+    </div>
+
+    <!-- RESULTS PANEL -->
+    <div class="panel">
+      <div class="panel-head">
+        <h2>Últimos resultados</h2>
+        <span class="badge-live"><span class="live-dot"></span>En vivo</span>
+      </div>
+      <table class="results">
+        <thead><tr><th>Prueba</th><th>Nadador</th><th>Club</th><th>Tiempo</th><th>Estado</th></tr></thead>
+        <tbody id="results-body">
+          <tr><td colspan="5" style="color:var(--texto-sec);">Cargando…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- MEDAL TABLE -->
+    <div class="panel">
+      <div class="panel-head"><h2>Medallero por club</h2></div>
+      <table class="medals">
+        <thead><tr><th style="text-align:left;padding-left:18px;">Club</th><th>Oro</th><th>Plata</th><th>Bronce</th><th>Total</th></tr></thead>
+        <tbody id="medallero-body">
+          <tr><td colspan="5" style="color:var(--texto-sec);padding-left:18px;">Cargando…</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+  </div>
+
+  <h2 class="section-title">Clubes participantes</h2>
+  <div class="clubs-grid" id="clubs-grid">
+    <div class="club-card"><div class="swatch"></div>Cargando…</div>
+  </div>
+</main>
+
+<footer class="site">
+  <div class="footer-inner">
+    <span>SwimNIC · Plataforma nicaragüense de resultados de natación</span>
+    <span>Datos oficiales importados vía Hy-Tek Bridge · Desarrollado por Mentalidad de Nadador</span>
+  </div>
+</footer>
+
+<script>
+const EVENTO_ID = 1;
+const medalClass = m => m ? 'done' : 'pending';
+
+async function cargarPruebas(sexo, containerId){
+  const el = document.getElementById(containerId);
+  try{
+    const res = await fetch(`/api/pruebas?evento_id=${EVENTO_ID}&sexo=${sexo}`);
+    const data = await res.json();
+    if(!data.length){ el.innerHTML = '<p style="padding:14px 18px;color:var(--texto-sec);font-size:13px;">Sin pruebas registradas.</p>'; return; }
+    el.innerHTML = data.map(p => `
+      <a href="#">
+        <span><span class="ev-code">${p.codigo}</span> ${p.nombre} ${p.categoria || ''}</span>
+        <span class="medal-ico ${medalClass(p.tiene_resultados)}"></span>
+      </a>`).join('');
+  }catch(e){
+    el.innerHTML = '<p style="padding:14px 18px;color:var(--texto-sec);font-size:13px;">No se pudo cargar. Verifica la conexión con la API.</p>';
+  }
+}
+
+async function cargarResultados(){
+  const body = document.getElementById('results-body');
+  try{
+    const res = await fetch(`/api/resultados?evento_id=${EVENTO_ID}&limit=8&page=1`);
+    const { data } = await res.json();
+    if(!data.length){ body.innerHTML = '<tr><td colspan="5" style="color:var(--texto-sec);">Aún sin resultados.</td></tr>'; return; }
+    body.innerHTML = data.map(r => `
+      <tr>
+        <td>${r.codigo} ${r.prueba}</td>
+        <td>${r.nadador}</td>
+        <td>${r.club}</td>
+        <td class="time">${r.tiempo || '—'}</td>
+        <td><span class="pill-status">${r.estado}</span></td>
+      </tr>`).join('');
+  }catch(e){
+    body.innerHTML = '<tr><td colspan="5" style="color:var(--texto-sec);">No se pudo cargar. Verifica la conexión con la API.</td></tr>';
+  }
+}
+
+async function cargarMedallero(){
+  const body = document.getElementById('medallero-body');
+  try{
+    const res = await fetch(`/api/medallero?evento_id=${EVENTO_ID}`);
+    const data = await res.json();
+    if(!data.length){ body.innerHTML = '<tr><td colspan="5" style="padding-left:18px;color:var(--texto-sec);">Aún sin medallas.</td></tr>'; return; }
+    body.innerHTML = data.map((c,i) => `
+      <tr>
+        <td class="club" style="padding-left:18px;"><span class="rank">${i+1}</span><span class="flag"></span>${c.club}</td>
+        <td class="oro-col">${c.oro}</td><td>${c.plata}</td><td>${c.bronce}</td><td class="total-col">${c.total}</td>
+      </tr>`).join('');
+  }catch(e){
+    body.innerHTML = '<tr><td colspan="5" style="padding-left:18px;color:var(--texto-sec);">No se pudo cargar. Verifica la conexión con la API.</td></tr>';
+  }
+}
+
+async function cargarClubes(){
+  const el = document.getElementById('clubs-grid');
+  try{
+    const res = await fetch('/api/clubes');
+    const data = await res.json();
+    if(!data.length){ el.innerHTML = '<p style="color:var(--texto-sec);">Sin clubes registrados.</p>'; return; }
+    el.innerHTML = data.map(c => `<div class="club-card"><div class="swatch"></div>${c.nombre}</div>`).join('');
+  }catch(e){
+    el.innerHTML = '<p style="color:var(--texto-sec);">No se pudo cargar. Verifica la conexión con la API.</p>';
+  }
+}
+
+function showTab(tab){
+  document.getElementById('tab-dama').style.display = tab==='dama' ? 'block':'none';
+  document.getElementById('tab-var').style.display = tab==='var' ? 'block':'none';
+  document.getElementById('tab-mix').style.display = tab==='mix' ? 'block':'none';
+  document.querySelectorAll('.tabs button').forEach(b=>b.classList.remove('active'));
+  event.target.classList.add('active');
+}
+
+cargarPruebas('F','tab-dama');
+cargarPruebas('M','tab-var');
+cargarPruebas('X','tab-mix');
+cargarResultados();
+cargarMedallero();
+cargarClubes();
+</script>
+
+</body>
+</html>

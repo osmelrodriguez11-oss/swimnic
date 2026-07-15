@@ -1,0 +1,8 @@
+name = "swimnic"
+pages_build_output_dir = "."
+compatibility_date = "2026-07-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "swimnic-db"
+database_id = "PON_AQUI_TU_DATABASE_ID"
